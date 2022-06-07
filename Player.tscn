@@ -1,0 +1,75 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Player.gd" type="Script" id=1]
+[ext_resource path="res://Characters.png" type="Texture" id=2]
+[ext_resource path="res://bar-fill.png" type="Texture" id=3]
+[ext_resource path="res://bar-background.png" type="Texture" id=4]
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 40.0
+height = 33.0
+
+[node name="Player" type="KinematicBody2D" groups=[
+"Net",
+"Player",
+]]
+script = ExtResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+scale = Vector2( 0.75, 0.75 )
+texture = ExtResource( 2 )
+offset = Vector2( 16, -6 )
+region_enabled = true
+region_rect = Rect2( 512, 1500, 256, 250 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=[
+"Player",
+]]
+shape = SubResource( 1 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Network_tick_rate" type="Timer" parent="."]
+wait_time = 0.03
+autostart = true
+
+[node name="Reload_timer" type="Timer" parent="."]
+wait_time = 0.15
+one_shot = true
+
+[node name="Hit_timer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="Shoot_point" type="Position2D" parent="."]
+position = Vector2( 98, 30 )
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" groups=[
+"Player",
+]]
+shape = SubResource( 1 )
+
+[node name="Control" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HealthBar" type="TextureProgress" parent="Control"]
+margin_left = -56.4737
+margin_top = 73.158
+margin_right = 71.5263
+margin_bottom = 109.158
+value = 75.0
+texture_under = ExtResource( 4 )
+texture_progress = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="timeout" from="Network_tick_rate" to="." method="_on_Network_tick_rate_timeout"]
+[connection signal="timeout" from="Reload_timer" to="." method="_on_Reload_timer_timeout"]
+[connection signal="timeout" from="Hit_timer" to="." method="_on_Hit_timer_timeout"]
+[connection signal="area_entered" from="Hitbox" to="." method="_on_Hitbox_area_entered"]
